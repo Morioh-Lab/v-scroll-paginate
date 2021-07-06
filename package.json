@@ -1,6 +1,6 @@
 {
   "name": "v-scroll-paginate",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "An infinite scroll paginate plugin for Vue 3.0",
   "module": "./src/index.js",
   "main": "./dist/scroll-paginate.min.js",

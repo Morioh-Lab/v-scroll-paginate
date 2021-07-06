@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import { computed, onMounted, onUnmounted, ref, reactive } from 'vue';   
+    import { computed, onMounted, onUnmounted, ref, reactive } from 'vue';
 
     export default {
         name: "v-scroll-paginate",
@@ -24,7 +24,7 @@
                         threshold: 0.85
                     }
                 }
-            },           
+            },
             fetch: Function
         },
 
@@ -37,12 +37,23 @@
                 COMPLETED: 0
             }), observer = null;
 
+            const reset = () => {
+                Object.assign(status, { LOADING: 0, COMPLETED: 0 });
+                observer.observe(el.value);
+            }
+
             onMounted(() => {
                 observer = new IntersectionObserver(entries => {
                     entries.forEach(entry => {
                         if (entry && entry.isIntersecting) {
 
+                            if (status.COMPLETED) {
+                                status.LOADING = 0;
+                                observer.unobserve(el.value);
+                            }
+
                             if (status.LOADING) return;
+
                             status.LOADING = 1;
 
                             if (typeof fetch === "function") {
@@ -51,9 +62,6 @@
                             else {
                                 emit("fetch", status);
                             }
-
-                            if (status.COMPLETED)
-                                observer.disconnect();
 
                         }
                     });
@@ -65,7 +73,7 @@
 
             onUnmounted(() => observer.disconnect());
 
-            return { el, status };
+            return { el, status, reset };
 
         }
     }
